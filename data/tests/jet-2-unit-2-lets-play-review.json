@@ -1,0 +1,376 @@
+{
+  "words": [
+    {
+      "en": "What",
+      "he": "מה",
+      "icon": "❓",
+      "mustSpell": true
+    },
+    {
+      "en": "Who",
+      "he": "מי",
+      "icon": "❓",
+      "mustSpell": true
+    },
+    {
+      "en": "my",
+      "he": "שלי",
+      "icon": "🙋",
+      "mustSpell": true
+    },
+    {
+      "en": "want",
+      "he": "רוצה",
+      "icon": "⭐",
+      "mustSpell": true
+    },
+    {
+      "en": "Do you want?",
+      "he": "האם אתה רוצה?",
+      "icon": "❓",
+      "mustSpell": true
+    },
+    {
+      "en": "I want",
+      "he": "אני רוצה",
+      "icon": "🙋",
+      "mustSpell": true
+    },
+    {
+      "en": "I don't want",
+      "he": "אני לא רוצה",
+      "icon": "🚫",
+      "mustSpell": true
+    },
+    {
+      "en": "shirt",
+      "he": "חולצה",
+      "icon": "👕",
+      "mustSpell": true
+    },
+    {
+      "en": "socks",
+      "he": "גרביים",
+      "icon": "🧦",
+      "mustSpell": true
+    },
+    {
+      "en": "pants",
+      "he": "מכנס ארוך",
+      "icon": "👖",
+      "mustSpell": true
+    },
+    {
+      "en": "boots",
+      "he": "מגפיים",
+      "icon": "🥾",
+      "mustSpell": true
+    },
+    {
+      "en": "children",
+      "he": "ילדים",
+      "icon": "🧒",
+      "mustSpell": true
+    },
+    {
+      "en": "There are",
+      "he": "ישנם/ן (רבים)",
+      "icon": "👥",
+      "mustSpell": true
+    },
+    {
+      "en": "Ice cream",
+      "he": "גלידה",
+      "icon": "🍦",
+      "mustSpell": true
+    },
+    {
+      "en": "dress",
+      "he": "שמלה",
+      "icon": "👗",
+      "mustSpell": true
+    },
+    {
+      "en": "Can you?",
+      "he": "האם אתה יכול?",
+      "icon": "❓",
+      "mustSpell": true
+    },
+    {
+      "en": "can",
+      "he": "יכול",
+      "icon": "✅",
+      "mustSpell": true
+    },
+    {
+      "en": "read",
+      "he": "לקרוא",
+      "icon": "📖",
+      "mustSpell": true
+    },
+    {
+      "en": "eat",
+      "he": "לאכול",
+      "icon": "🍽️",
+      "mustSpell": true
+    },
+    {
+      "en": "they",
+      "he": "הם, הן",
+      "icon": "👥",
+      "mustSpell": true
+    },
+    {
+      "en": "summer",
+      "he": "קיץ",
+      "icon": "☀️",
+      "mustSpell": true
+    },
+    {
+      "en": "weather",
+      "he": "מזג אוויר",
+      "icon": "🌦️",
+      "mustSpell": true
+    },
+    {
+      "en": "spring",
+      "he": "אביב",
+      "icon": "🌸",
+      "mustSpell": true
+    },
+    {
+      "en": "today",
+      "he": "היום",
+      "icon": "📅",
+      "mustSpell": true
+    },
+    {
+      "en": "hot",
+      "he": "חם",
+      "icon": "🔥",
+      "mustSpell": true
+    },
+    {
+      "en": "sunny",
+      "he": "שמשי",
+      "icon": "☀️",
+      "mustSpell": true
+    },
+    {
+      "en": "nice",
+      "he": "נחמד",
+      "icon": "🙂",
+      "mustSpell": true
+    },
+    {
+      "en": "warm",
+      "he": "חמים",
+      "icon": "🌤️",
+      "mustSpell": true
+    },
+    {
+      "en": "basketball",
+      "he": "כדורסל",
+      "icon": "🏀",
+      "mustSpell": true
+    },
+    {
+      "en": "we",
+      "he": "אנחנו",
+      "icon": "👥",
+      "mustSpell": true
+    },
+    {
+      "en": "okay",
+      "he": "בסדר",
+      "icon": "👌",
+      "mustSpell": true
+    },
+    {
+      "en": "park",
+      "he": "פארק",
+      "icon": "🌳",
+      "mustSpell": true
+    },
+    {
+      "en": "play",
+      "he": "לשחק",
+      "icon": "🎮",
+      "mustSpell": true
+    },
+    {
+      "en": "good for you",
+      "he": "בריא בשבילך",
+      "icon": "💪",
+      "mustSpell": true
+    },
+    {
+      "en": "fly",
+      "he": "לעוף/להעיף",
+      "icon": "🪁",
+      "mustSpell": true
+    },
+    {
+      "en": "kite",
+      "he": "עפיפון",
+      "icon": "🪁",
+      "mustSpell": true
+    },
+    {
+      "en": "I can",
+      "he": "אני יכול",
+      "icon": "✅",
+      "mustSpell": true
+    },
+    {
+      "en": "I can't",
+      "he": "אני לא יכול",
+      "icon": "🚫",
+      "mustSpell": true
+    },
+    {
+      "en": "stand",
+      "he": "לעמוד",
+      "icon": "🧍",
+      "mustSpell": true
+    },
+    {
+      "en": "wear",
+      "he": "ללבוש",
+      "icon": "🧥",
+      "mustSpell": true
+    },
+    {
+      "en": "winter",
+      "he": "חורף",
+      "icon": "❄️",
+      "mustSpell": true
+    },
+    {
+      "en": "funny",
+      "he": "מצחיק",
+      "icon": "😂",
+      "mustSpell": true
+    },
+    {
+      "en": "near",
+      "he": "ליד",
+      "icon": "📍",
+      "mustSpell": true
+    },
+    {
+      "en": "old",
+      "he": "ישן/זקן",
+      "icon": "👴",
+      "mustSpell": true
+    },
+    {
+      "en": "too",
+      "he": "גם",
+      "icon": "➕",
+      "mustSpell": true
+    },
+    {
+      "en": "tree",
+      "he": "עץ",
+      "icon": "🌳",
+      "mustSpell": true
+    },
+    {
+      "en": "cloud",
+      "he": "ענן",
+      "icon": "☁️",
+      "mustSpell": true
+    },
+    {
+      "en": "sky",
+      "he": "שמים",
+      "icon": "🌌",
+      "mustSpell": true
+    },
+    {
+      "en": "football",
+      "he": "כדורגל",
+      "icon": "⚽",
+      "mustSpell": true
+    },
+    {
+      "en": "picture",
+      "he": "תמונה",
+      "icon": "🖼️",
+      "mustSpell": true
+    },
+    {
+      "en": "house",
+      "he": "בית",
+      "icon": "🏠",
+      "mustSpell": true
+    },
+    {
+      "en": "home",
+      "he": "בית",
+      "icon": "🏡",
+      "mustSpell": true
+    },
+    {
+      "en": "store",
+      "he": "חנות",
+      "icon": "🏪",
+      "mustSpell": true
+    },
+    {
+      "en": "there is",
+      "he": "ישנו/ה (יחיד)",
+      "icon": "☝️",
+      "mustSpell": true
+    },
+    {
+      "en": "eyes",
+      "he": "עיניים",
+      "icon": "👀",
+      "mustSpell": true
+    },
+    {
+      "en": "nose",
+      "he": "אף",
+      "icon": "👃",
+      "mustSpell": true
+    },
+    {
+      "en": "mouth",
+      "he": "פה",
+      "icon": "👄",
+      "mustSpell": true
+    },
+    {
+      "en": "father",
+      "he": "אבא",
+      "icon": "👨",
+      "mustSpell": true
+    },
+    {
+      "en": "mother",
+      "he": "אמא",
+      "icon": "👩",
+      "mustSpell": true
+    },
+    {
+      "en": "sleep",
+      "he": "לישון",
+      "icon": "😴",
+      "mustSpell": true
+    },
+    {
+      "en": "coat",
+      "he": "מעיל",
+      "icon": "🧥",
+      "mustSpell": true
+    },
+    {
+      "en": "autumn",
+      "he": "סתיו",
+      "icon": "🍂",
+      "mustSpell": true
+    }
+  ]
+}

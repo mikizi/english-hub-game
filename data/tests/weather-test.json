@@ -1,0 +1,64 @@
+{
+  "words": [
+    {
+      "en": "hot",
+      "he": "חם",
+      "icon": "🔥",
+      "mustSpell": true
+    },
+    {
+      "en": "cold",
+      "he": "קר",
+      "icon": "❄️",
+      "mustSpell": true
+    },
+    {
+      "en": "warm",
+      "he": "חמים",
+      "icon": "🌤️",
+      "mustSpell": true
+    },
+    {
+      "en": "snow",
+      "he": "שלג",
+      "icon": "☃️",
+      "mustSpell": true
+    },
+    {
+      "en": "old",
+      "he": "זקן / ישן",
+      "icon": "👴",
+      "mustSpell": true
+    },
+    {
+      "en": "nose",
+      "he": "אף",
+      "icon": "👃",
+      "mustSpell": false
+    },
+    {
+      "en": "winter",
+      "he": "חורף",
+      "icon": "🌨️",
+      "mustSpell": false
+    },
+    {
+      "en": "spring",
+      "he": "אביב",
+      "icon": "🌸",
+      "mustSpell": false
+    },
+    {
+      "en": "summer",
+      "he": "קיץ",
+      "icon": "☀️",
+      "mustSpell": false
+    },
+    {
+      "en": "autumn",
+      "he": "סתיו",
+      "icon": "🍂",
+      "mustSpell": false
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "words": [
+    {
+      "en": "hot",
+      "he": "חם",
+      "icon": "🔥",
+      "mustSpell": true
+    },
+    {
+      "en": "cold",
+      "he": "קר",
+      "icon": "❄️",
+      "mustSpell": true
+    },
+    {
+      "en": "warm",
+      "he": "חמים",
+      "icon": "🌤️",
+      "mustSpell": true
+    },
+    {
+      "en": "snow",
+      "he": "שלג",
+      "icon": "☃️",
+      "mustSpell": true
+    },
+    {
+      "en": "old",
+      "he": "זקן / ישן",
+      "icon": "👴",
+      "mustSpell": true
+    }
+  ]
+}

@@ -12,27 +12,46 @@
 
 ## Word lists
 
-רשימות המילים נמצאות בקובץ:
+קובץ האינדקס הראשי מכיל מפה של המבחנים:
 
 ```text
 data/word-lists.json
 ```
 
-אפשר להוסיף שם רשימות חדשות במבנה הבא:
+כל מבחן מפנה לקובץ מילים נפרד דרך `wordsUrl`, כדי שהאינדקס הראשי יישאר קטן:
 
 ```json
 {
-  "id": "new-test",
-  "name": "שם הרשימה",
-  "description": "תיאור קצר שמופיע באפליקציה",
-  "reference": {
-    "label": "שם חומר העזר",
-    "url": "assets/references/example.pdf"
-  },
+  "defaultTestId": "weather-test",
+  "tests": {
+    "new-test": {
+      "name": "שם הרשימה",
+      "description": "תיאור קצר שמופיע באפליקציה",
+      "wordCount": 1,
+      "wordsUrl": "data/tests/new-test.json",
+      "reference": {
+        "label": "שם חומר העזר",
+        "url": "assets/references/example.pdf"
+      }
+    }
+  }
+}
+```
+
+קובץ המילים של מבחן נראה כך:
+
+```json
+{
   "words": [
     { "en": "summer", "he": "קיץ", "icon": "☀️", "mustSpell": true }
   ]
 }
+```
+
+קבצי המילים נמצאים בתיקייה:
+
+```text
+data/tests/
 ```
 
 השדה `mustSpell` קובע אם המילה תופיע באימון הכתיבה.

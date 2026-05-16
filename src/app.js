@@ -4,7 +4,8 @@ const STORAGE_KEYS = {
   settings: "eduSettings_v2"
 };
 
-const WORD_LISTS_URL = "data/word-lists.json?v=pwa-1";
+const DATA_VERSION = "pwa-2";
+const WORD_LISTS_URL = `data/word-lists.json?v=${DATA_VERSION}`;
 
 const fallbackWordLists = [
   {
@@ -178,7 +179,7 @@ async function loadWordLists() {
     const response = await fetch(WORD_LISTS_URL);
     if (!response.ok) throw new Error("Could not load word lists");
     const data = await response.json();
-    bundledLists = sanitizeWordLists(data.lists);
+    bundledLists = await hydrateWordLists(readWordListIndex(data));
   } catch {
     bundledLists = sanitizeWordLists(fallbackWordLists);
   }
@@ -194,22 +195,68 @@ async function loadWordLists() {
   migrateLegacyWords();
 }
 
+function readWordListIndex(data) {
+  if (Array.isArray(data?.lists)) return data.lists;
+
+  if (data?.tests && typeof data.tests === "object") {
+    return Object.entries(data.tests).map(([id, test]) => ({ id, ...test }));
+  }
+
+  return fallbackWordLists;
+}
+
+async function hydrateWordLists(lists) {
+  const sanitizedLists = sanitizeWordLists(lists);
+
+  return Promise.all(
+    sanitizedLists.map(async (list) => {
+      if (list.words.length > 0 || !list.wordsUrl) return list;
+
+      try {
+        const response = await fetch(withDataVersion(list.wordsUrl));
+        if (!response.ok) throw new Error("Could not load test words");
+        const data = await response.json();
+        list.words = sanitizeWords(data.words || data);
+        list.wordCount = list.words.length;
+      } catch {
+        list.words = [];
+      }
+
+      return list;
+    })
+  );
+}
+
+function withDataVersion(url) {
+  return `${url}${url.includes("?") ? "&" : "?"}v=${DATA_VERSION}`;
+}
+
 function sanitizeWordLists(lists) {
   return (Array.isArray(lists) ? lists : fallbackWordLists)
-    .filter((list) => list && list.id && list.name && Array.isArray(list.words))
-    .map((list) => ({
-      id: String(list.id),
-      name: String(list.name),
-      description: String(list.description || ""),
-      reference: sanitizeReference(list.reference),
-      words: list.words
-        .filter((word) => word && word.en && word.he)
-        .map((word) => ({
-          en: String(word.en).trim(),
-          he: String(word.he).trim(),
-          icon: String(word.icon || "").trim(),
-          mustSpell: Boolean(word.mustSpell)
-        }))
+    .filter((list) => list && list.id && list.name)
+    .map((list) => {
+      const words = sanitizeWords(list.words);
+
+      return {
+        id: String(list.id),
+        name: String(list.name),
+        description: String(list.description || ""),
+        reference: sanitizeReference(list.reference),
+        wordCount: Number(list.wordCount) || words.length,
+        wordsUrl: String(list.wordsUrl || ""),
+        words
+      };
+    });
+}
+
+function sanitizeWords(words) {
+  return (Array.isArray(words) ? words : [])
+    .filter((word) => word && word.en && word.he)
+    .map((word) => ({
+      en: String(word.en).trim(),
+      he: String(word.he).trim(),
+      icon: String(word.icon || "").trim(),
+      mustSpell: Boolean(word.mustSpell)
     }));
 }
 
