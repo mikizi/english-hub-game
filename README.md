@@ -25,6 +25,10 @@ data/word-lists.json
   "id": "new-test",
   "name": "שם הרשימה",
   "description": "תיאור קצר שמופיע באפליקציה",
+  "reference": {
+    "label": "שם חומר העזר",
+    "url": "assets/references/example.pdf"
+  },
   "words": [
     { "en": "summer", "he": "קיץ", "icon": "☀️", "mustSpell": true }
   ]
@@ -32,6 +36,7 @@ data/word-lists.json
 ```
 
 השדה `mustSpell` קובע אם המילה תופיע באימון הכתיבה.
+השדה `reference` אופציונלי ומציג קישור לחומר עזר ליד רשימת המילים.
 
 ## Run locally
 

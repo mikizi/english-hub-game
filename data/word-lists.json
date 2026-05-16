@@ -33,6 +33,10 @@
       "id": "jet-2-unit-2-lets-play-review",
       "name": "Jet 2 - Unit 2 - Let's Play - Review",
       "description": "מילים ומשפטים לחזרה לקראת המבחן ביחידה 2.",
+      "reference": {
+        "label": "הודעה וקישורים לתרגול יחידה 2",
+        "url": "assets/references/jet-2-unit-2-practice-reference.pdf"
+      },
       "words": [
         { "en": "What", "he": "מה", "icon": "❓", "mustSpell": true },
         { "en": "Who", "he": "מי", "icon": "❓", "mustSpell": true },

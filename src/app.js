@@ -4,7 +4,7 @@ const STORAGE_KEYS = {
   settings: "eduSettings_v2"
 };
 
-const WORD_LISTS_URL = "data/word-lists.json?v=jet-2-review";
+const WORD_LISTS_URL = "data/word-lists.json?v=jet-2-reference";
 
 const fallbackWordLists = [
   {
@@ -65,6 +65,7 @@ const elements = {
   playerIndicatorIcon: document.getElementById("player-indicator-icon"),
   wordListSelect: document.getElementById("word-list-select"),
   wordListDescription: document.getElementById("word-list-description"),
+  wordListReference: document.getElementById("word-list-reference"),
   adminWordList: document.getElementById("admin-word-list"),
   addWordForm: document.getElementById("add-word-form"),
   addEn: document.getElementById("add-en"),
@@ -200,6 +201,7 @@ function sanitizeWordLists(lists) {
       id: String(list.id),
       name: String(list.name),
       description: String(list.description || ""),
+      reference: sanitizeReference(list.reference),
       words: list.words
         .filter((word) => word && word.en && word.he)
         .map((word) => ({
@@ -211,10 +213,26 @@ function sanitizeWordLists(lists) {
     }));
 }
 
+function sanitizeReference(reference) {
+  if (!reference || !reference.url) return null;
+
+  return {
+    label: String(reference.label || "חומר עזר"),
+    url: String(reference.url)
+  };
+}
+
 function mergeWordLists(bundledLists, savedLists) {
   const listsById = new Map();
   bundledLists.forEach((list) => listsById.set(list.id, list));
-  savedLists.forEach((list) => listsById.set(list.id, list));
+  savedLists.forEach((list) => {
+    const bundledList = listsById.get(list.id);
+    listsById.set(list.id, {
+      ...bundledList,
+      ...list,
+      reference: list.reference || bundledList?.reference || null
+    });
+  });
   return [...listsById.values()];
 }
 
@@ -274,6 +292,19 @@ function renderListControls() {
   renderSelectOptions(elements.wordListSelect, appSettings.selectedListId);
   renderSelectOptions(elements.settingsDefaultList, appSettings.defaultListId);
   elements.wordListDescription.textContent = currentList.description || `${currentList.words.length} מילים לתרגול`;
+  renderReferenceLink(currentList);
+}
+
+function renderReferenceLink(list) {
+  if (!list.reference) {
+    elements.wordListReference.classList.add("hidden");
+    elements.wordListReference.removeAttribute("href");
+    return;
+  }
+
+  elements.wordListReference.href = list.reference.url;
+  elements.wordListReference.textContent = `פתח ${list.reference.label}`;
+  elements.wordListReference.classList.remove("hidden");
 }
 
 function renderSelectOptions(select, selectedValue) {
