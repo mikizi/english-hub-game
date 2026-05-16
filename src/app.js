@@ -4,7 +4,7 @@ const STORAGE_KEYS = {
   settings: "eduSettings_v2"
 };
 
-const WORD_LISTS_URL = "data/word-lists.json?v=jet-2-reference";
+const WORD_LISTS_URL = "data/word-lists.json?v=pwa-1";
 
 const fallbackWordLists = [
   {
@@ -608,3 +608,11 @@ async function initApp() {
 }
 
 initApp();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js").catch(() => {
+      // The app still works if PWA registration is unavailable.
+    });
+  });
+}

@@ -52,6 +52,18 @@ Then open:
 http://localhost:8000
 ```
 
+## PWA
+
+The app is installable as a PWA. The required assets live in:
+
+```text
+manifest.webmanifest
+service-worker.js
+assets/icons/
+```
+
+The service worker caches the app shell, word lists, icons, and the Unit 2 reference PDF for offline use after the first successful load.
+
 ## Upload to GitHub
 
 ```bash
