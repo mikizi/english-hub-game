@@ -4,7 +4,7 @@ const STORAGE_KEYS = {
   settings: "eduSettings_v2"
 };
 
-const WORD_LISTS_URL = "data/word-lists.json";
+const WORD_LISTS_URL = "data/word-lists.json?v=jet-2-review";
 
 const fallbackWordLists = [
   {
