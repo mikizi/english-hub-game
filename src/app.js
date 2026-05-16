@@ -171,21 +171,25 @@ function saveSettings() {
 }
 
 async function loadWordLists() {
-  const savedLists = readJson(STORAGE_KEYS.wordLists, null);
-  if (Array.isArray(savedLists) && savedLists.length > 0) {
-    wordLists = sanitizeWordLists(savedLists);
-    return;
-  }
+  let bundledLists;
 
   try {
     const response = await fetch(WORD_LISTS_URL);
     if (!response.ok) throw new Error("Could not load word lists");
     const data = await response.json();
-    wordLists = sanitizeWordLists(data.lists);
+    bundledLists = sanitizeWordLists(data.lists);
   } catch {
-    wordLists = sanitizeWordLists(fallbackWordLists);
+    bundledLists = sanitizeWordLists(fallbackWordLists);
   }
 
+  const savedLists = readJson(STORAGE_KEYS.wordLists, null);
+  if (Array.isArray(savedLists) && savedLists.length > 0) {
+    wordLists = mergeWordLists(bundledLists, sanitizeWordLists(savedLists));
+    saveWordLists();
+    return;
+  }
+
+  wordLists = bundledLists;
   migrateLegacyWords();
 }
 
@@ -205,6 +209,13 @@ function sanitizeWordLists(lists) {
           mustSpell: Boolean(word.mustSpell)
         }))
     }));
+}
+
+function mergeWordLists(bundledLists, savedLists) {
+  const listsById = new Map();
+  bundledLists.forEach((list) => listsById.set(list.id, list));
+  savedLists.forEach((list) => listsById.set(list.id, list));
+  return [...listsById.values()];
 }
 
 function migrateLegacyWords() {
