@@ -1,28 +1,52 @@
 const STORAGE_KEYS = {
-  words: "eduWords_v2",
+  legacyWords: "eduWords_v2",
+  wordLists: "eduWordLists_v1",
   settings: "eduSettings_v2"
 };
 
-const defaultWords = [
-  { en: "hot", he: "חם", icon: "🔥", mustSpell: true },
-  { en: "cold", he: "קר", icon: "❄️", mustSpell: true },
-  { en: "warm", he: "חמים", icon: "🌤️", mustSpell: true },
-  { en: "snow", he: "שלג", icon: "☃️", mustSpell: true },
-  { en: "old", he: "זקן / ישן", icon: "👴", mustSpell: true },
-  { en: "nose", he: "אף", icon: "👃", mustSpell: false },
-  { en: "winter", he: "חורף", icon: "🌨️", mustSpell: false },
-  { en: "spring", he: "אביב", icon: "🌸", mustSpell: false },
-  { en: "summer", he: "קיץ", icon: "☀️", mustSpell: false },
-  { en: "autumn", he: "סתיו", icon: "🍂", mustSpell: false }
+const WORD_LISTS_URL = "data/word-lists.json";
+
+const fallbackWordLists = [
+  {
+    id: "weather-test",
+    name: "מבחן מזג אוויר ועונות",
+    description: "רשימת המילים המקורית לתרגול כתיבה, בחירה מהירה ומשחק זיכרון.",
+    words: [
+      { en: "hot", he: "חם", icon: "🔥", mustSpell: true },
+      { en: "cold", he: "קר", icon: "❄️", mustSpell: true },
+      { en: "warm", he: "חמים", icon: "🌤️", mustSpell: true },
+      { en: "snow", he: "שלג", icon: "☃️", mustSpell: true },
+      { en: "old", he: "זקן / ישן", icon: "👴", mustSpell: true },
+      { en: "nose", he: "אף", icon: "👃", mustSpell: false },
+      { en: "winter", he: "חורף", icon: "🌨️", mustSpell: false },
+      { en: "spring", he: "אביב", icon: "🌸", mustSpell: false },
+      { en: "summer", he: "קיץ", icon: "☀️", mustSpell: false },
+      { en: "autumn", he: "סתיו", icon: "🍂", mustSpell: false }
+    ]
+  },
+  {
+    id: "spelling-test",
+    name: "מילים שחובה לאיית",
+    description: "רשימה קצרה שמכילה רק מילים שמסומנות כחובה להכתבה.",
+    words: [
+      { en: "hot", he: "חם", icon: "🔥", mustSpell: true },
+      { en: "cold", he: "קר", icon: "❄️", mustSpell: true },
+      { en: "warm", he: "חמים", icon: "🌤️", mustSpell: true },
+      { en: "snow", he: "שלג", icon: "☃️", mustSpell: true },
+      { en: "old", he: "זקן / ישן", icon: "👴", mustSpell: true }
+    ]
+  }
 ];
 
 const defaultSettings = {
   showIcons: true,
-  showGhost: true
+  showGhost: true,
+  defaultListId: "weather-test",
+  selectedListId: "weather-test"
 };
 
-let words = readJson(STORAGE_KEYS.words, defaultWords);
-let appSettings = readJson(STORAGE_KEYS.settings, defaultSettings);
+let wordLists = [];
+let appSettings = normalizeSettings(readJson(STORAGE_KEYS.settings, defaultSettings));
 
 const state = {
   currentMode: "home",
@@ -39,6 +63,8 @@ const elements = {
   progressPercent: document.getElementById("progress-percent"),
   playerIndicatorText: document.getElementById("player-indicator-text"),
   playerIndicatorIcon: document.getElementById("player-indicator-icon"),
+  wordListSelect: document.getElementById("word-list-select"),
+  wordListDescription: document.getElementById("word-list-description"),
   adminWordList: document.getElementById("admin-word-list"),
   addWordForm: document.getElementById("add-word-form"),
   addEn: document.getElementById("add-en"),
@@ -47,6 +73,9 @@ const elements = {
   addMustSpell: document.getElementById("add-mustSpell"),
   settingsShowIcons: document.getElementById("settings-show-icons"),
   settingsShowGhost: document.getElementById("settings-show-ghost"),
+  settingsDefaultList: document.getElementById("settings-default-list"),
+  adminActiveListName: document.getElementById("admin-active-list-name"),
+  adminActiveListCount: document.getElementById("admin-active-list-count"),
   spellIcon: document.getElementById("spell-icon"),
   spellHe: document.getElementById("spell-he"),
   spellInput: document.getElementById("spell-input"),
@@ -78,6 +107,17 @@ document.addEventListener("change", (event) => {
     appSettings[setting] = event.target.checked;
     saveSettings();
     updateAdminUI();
+    return;
+  }
+
+  if (event.target === elements.wordListSelect) {
+    selectWordList(event.target.value);
+    return;
+  }
+
+  if (event.target === elements.settingsDefaultList) {
+    appSettings.defaultListId = event.target.value;
+    selectWordList(event.target.value);
   }
 });
 
@@ -118,12 +158,122 @@ function readJson(key, fallback) {
   }
 }
 
-function saveWords() {
-  localStorage.setItem(STORAGE_KEYS.words, JSON.stringify(words));
+function normalizeSettings(settings) {
+  return { ...defaultSettings, ...settings };
+}
+
+function saveWordLists() {
+  localStorage.setItem(STORAGE_KEYS.wordLists, JSON.stringify(wordLists));
 }
 
 function saveSettings() {
   localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(appSettings));
+}
+
+async function loadWordLists() {
+  const savedLists = readJson(STORAGE_KEYS.wordLists, null);
+  if (Array.isArray(savedLists) && savedLists.length > 0) {
+    wordLists = sanitizeWordLists(savedLists);
+    return;
+  }
+
+  try {
+    const response = await fetch(WORD_LISTS_URL);
+    if (!response.ok) throw new Error("Could not load word lists");
+    const data = await response.json();
+    wordLists = sanitizeWordLists(data.lists);
+  } catch {
+    wordLists = sanitizeWordLists(fallbackWordLists);
+  }
+
+  migrateLegacyWords();
+}
+
+function sanitizeWordLists(lists) {
+  return (Array.isArray(lists) ? lists : fallbackWordLists)
+    .filter((list) => list && list.id && list.name && Array.isArray(list.words))
+    .map((list) => ({
+      id: String(list.id),
+      name: String(list.name),
+      description: String(list.description || ""),
+      words: list.words
+        .filter((word) => word && word.en && word.he)
+        .map((word) => ({
+          en: String(word.en).trim(),
+          he: String(word.he).trim(),
+          icon: String(word.icon || "").trim(),
+          mustSpell: Boolean(word.mustSpell)
+        }))
+    }));
+}
+
+function migrateLegacyWords() {
+  const legacyWords = readJson(STORAGE_KEYS.legacyWords, null);
+  if (!Array.isArray(legacyWords) || legacyWords.length === 0) return;
+
+  const legacyListExists = wordLists.some((list) => list.id === "my-saved-words");
+  if (legacyListExists) return;
+
+  wordLists.push({
+    id: "my-saved-words",
+    name: "המילים שלי",
+    description: "רשימה שנוצרה מהמילים שנשמרו בגרסה הקודמת של האפליקציה.",
+    words: legacyWords
+  });
+  saveWordLists();
+}
+
+function syncSelectedList() {
+  if (wordLists.length === 0) {
+    wordLists = sanitizeWordLists(fallbackWordLists);
+  }
+
+  const defaultExists = wordLists.some((list) => list.id === appSettings.defaultListId);
+
+  if (!defaultExists) {
+    appSettings.defaultListId = wordLists[0].id;
+  }
+
+  appSettings.selectedListId = appSettings.defaultListId;
+
+  saveSettings();
+}
+
+function getCurrentList() {
+  return wordLists.find((list) => list.id === appSettings.selectedListId) || wordLists[0];
+}
+
+function getWords() {
+  return getCurrentList().words;
+}
+
+function selectWordList(listId) {
+  if (!wordLists.some((list) => list.id === listId)) return;
+
+  appSettings.selectedListId = listId;
+  saveSettings();
+  renderListControls();
+  updateAdminUI();
+  updateProgress(0, `נבחרה רשימה: ${getCurrentList().name}`, "📚");
+}
+
+function renderListControls() {
+  const currentList = getCurrentList();
+
+  renderSelectOptions(elements.wordListSelect, appSettings.selectedListId);
+  renderSelectOptions(elements.settingsDefaultList, appSettings.defaultListId);
+  elements.wordListDescription.textContent = currentList.description || `${currentList.words.length} מילים לתרגול`;
+}
+
+function renderSelectOptions(select, selectedValue) {
+  select.innerHTML = "";
+  wordLists.forEach((list) => {
+    const option = document.createElement("option");
+    option.value = list.id;
+    option.textContent = `${list.name} (${list.words.length})`;
+    option.selected = list.id === selectedValue;
+    select.appendChild(option);
+  });
 }
 
 function showScreen(id) {
@@ -133,7 +283,7 @@ function showScreen(id) {
   window.scrollTo(0, 0);
 
   if (id === "home") {
-    updateProgress(0, "מוכן לתרגול", "⭐");
+    updateProgress(0, `מוכן לתרגול: ${getCurrentList().name}`, "⭐");
   }
 
   if (id === "admin") {
@@ -142,8 +292,14 @@ function showScreen(id) {
 }
 
 function updateAdminUI() {
+  const currentList = getCurrentList();
+  const words = getWords();
+
   elements.settingsShowIcons.checked = appSettings.showIcons;
   elements.settingsShowGhost.checked = appSettings.showGhost;
+  elements.adminActiveListName.textContent = currentList.name;
+  elements.adminActiveListCount.textContent = `${words.length} מילים ברשימה`;
+  renderListControls();
   elements.adminWordList.innerHTML = "";
 
   words.forEach((word, index) => {
@@ -165,8 +321,6 @@ function updateAdminUI() {
     card.querySelector(".delete-word").addEventListener("click", () => deleteWord(index));
     elements.adminWordList.appendChild(card);
   });
-
-  saveWords();
 }
 
 function addNewWord() {
@@ -177,18 +331,22 @@ function addNewWord() {
 
   if (!en || !he) return;
 
-  words.push({ en, he, icon, mustSpell });
+  getWords().push({ en, he, icon, mustSpell });
+  saveWordLists();
   updateAdminUI();
   elements.addWordForm.reset();
   elements.addEn.focus();
 }
 
 function deleteWord(index) {
-  words.splice(index, 1);
+  getWords().splice(index, 1);
+  saveWordLists();
   updateAdminUI();
 }
 
 function startMode(mode) {
+  const words = getWords();
+
   state.currentIdx = 0;
   state.memoryMatched = 0;
   state.memoryFlipped = [];
@@ -205,12 +363,20 @@ function startMode(mode) {
 
   if (mode === "quiz") {
     state.activeList = [...words].sort(() => Math.random() - 0.5);
+    if (state.activeList.length === 0) {
+      alert("צריך לבחור רשימה עם מילים!");
+      return;
+    }
     showScreen("quiz");
     loadQuiz();
   }
 
   if (mode === "memory") {
     state.activeList = [...words].sort(() => Math.random() - 0.5).slice(0, 8);
+    if (state.activeList.length === 0) {
+      alert("צריך לבחור רשימה עם מילים!");
+      return;
+    }
     showScreen("memory");
     initMemory();
   }
@@ -243,6 +409,7 @@ function loadQuiz() {
     return;
   }
 
+  const words = getWords();
   const currentWord = state.activeList[state.currentIdx];
   elements.quizEn.textContent = currentWord.en;
   elements.quizIcon.textContent = appSettings.showIcons ? currentWord.icon || "❓" : "❓";
@@ -390,4 +557,12 @@ function finishGame() {
   speak("Excellent job! You are a champion!");
 }
 
-updateAdminUI();
+async function initApp() {
+  await loadWordLists();
+  syncSelectedList();
+  renderListControls();
+  updateAdminUI();
+  showScreen("home");
+}
+
+initApp();

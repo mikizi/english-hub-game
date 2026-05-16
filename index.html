@@ -37,6 +37,17 @@
         <p class="text-gray-400 text-xl max-w-2xl">בחר את שיטת התרגול המועדפת עליך והתחל לשבור שיאים.</p>
       </header>
 
+      <section class="mb-10 bg-zinc-900/50 border border-white/5 rounded-[2rem] p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+        <div>
+          <h2 class="text-2xl font-black mb-1">רשימת מילים</h2>
+          <p id="word-list-description" class="text-gray-500 font-bold">טוען רשימות...</p>
+        </div>
+        <label class="min-w-full md:min-w-[320px]">
+          <span class="sr-only">בחר רשימת מילים</span>
+          <select id="word-list-select" class="admin-input text-lg font-bold"></select>
+        </label>
+      </section>
+
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <button type="button" data-mode="spelling" class="spotify-card p-12 rounded-[3rem] cursor-pointer group text-right">
           <span class="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">✍️</span>
@@ -66,6 +77,20 @@
       </div>
 
       <div class="mb-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <label class="bg-zinc-900/50 p-6 rounded-3xl border border-white/5 flex flex-col gap-3 cursor-pointer">
+          <span>
+            <span class="block font-bold">רשימת ברירת מחדל</span>
+            <span class="block text-xs text-gray-500">הרשימה שתיפתח אוטומטית בכל כניסה לאפליקציה</span>
+          </span>
+          <select id="settings-default-list" class="admin-input font-bold"></select>
+        </label>
+
+        <div class="bg-zinc-900/50 p-6 rounded-3xl border border-white/5 flex flex-col gap-2">
+          <span class="block font-bold">הרשימה שנערכת עכשיו</span>
+          <span id="admin-active-list-name" class="text-[#1db954] text-xl font-black"></span>
+          <span id="admin-active-list-count" class="text-xs text-gray-500"></span>
+        </div>
+
         <label class="bg-zinc-900/50 p-6 rounded-3xl border border-white/5 flex items-center gap-4 cursor-pointer">
           <span class="relative inline-flex items-center">
             <input type="checkbox" id="settings-show-icons" class="sr-only peer" data-setting="showIcons">
