@@ -1,16 +1,15 @@
-const CACHE_VERSION = "english-hub-game-pwa-v2";
-const RUNTIME_CACHE = "english-hub-game-runtime-v2";
+const CACHE_VERSION = "english-hub-game-pwa-v3";
+const RUNTIME_CACHE = "english-hub-game-runtime-v3";
 
 const CORE_ASSETS = [
   "./",
   "index.html",
   "manifest.webmanifest",
-  "src/styles.css?v=pwa-2",
-  "src/app.js?v=pwa-2",
-  "data/word-lists.json?v=pwa-2",
-  "data/tests/weather-test.json?v=pwa-2",
-  "data/tests/spelling-test.json?v=pwa-2",
-  "data/tests/jet-2-unit-2-lets-play-review.json?v=pwa-2",
+  "src/styles.css?v=pwa-3",
+  "src/app.js?v=pwa-3",
+  "data/word-lists.json?v=pwa-3",
+  "data/tests/weather-test.json?v=pwa-3",
+  "data/tests/summary-test.json?v=pwa-3",
   "assets/icons/icon.svg",
   "assets/icons/icon-192.png",
   "assets/icons/icon-512.png",

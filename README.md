@@ -24,11 +24,11 @@ data/word-lists.json
 {
   "defaultTestId": "weather-test",
   "tests": {
-    "new-test": {
+    "summary-test": {
       "name": "שם הרשימה",
       "description": "תיאור קצר שמופיע באפליקציה",
       "wordCount": 1,
-      "wordsUrl": "data/tests/new-test.json",
+      "wordsUrl": "data/tests/summary-test.json",
       "reference": {
         "label": "שם חומר העזר",
         "url": "assets/references/example.pdf"

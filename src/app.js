@@ -4,13 +4,13 @@ const STORAGE_KEYS = {
   settings: "eduSettings_v2"
 };
 
-const DATA_VERSION = "pwa-2";
+const DATA_VERSION = "pwa-3";
 const WORD_LISTS_URL = `data/word-lists.json?v=${DATA_VERSION}`;
 
 const fallbackWordLists = [
   {
     id: "weather-test",
-    name: "מבחן מזג אוויר ועונות",
+    name: "עונות השנה",
     description: "רשימת המילים המקורית לתרגול כתיבה, בחירה מהירה ומשחק זיכרון.",
     words: [
       { en: "hot", he: "חם", icon: "🔥", mustSpell: true },
@@ -23,18 +23,6 @@ const fallbackWordLists = [
       { en: "spring", he: "אביב", icon: "🌸", mustSpell: false },
       { en: "summer", he: "קיץ", icon: "☀️", mustSpell: false },
       { en: "autumn", he: "סתיו", icon: "🍂", mustSpell: false }
-    ]
-  },
-  {
-    id: "spelling-test",
-    name: "מילים שחובה לאיית",
-    description: "רשימה קצרה שמכילה רק מילים שמסומנות כחובה להכתבה.",
-    words: [
-      { en: "hot", he: "חם", icon: "🔥", mustSpell: true },
-      { en: "cold", he: "קר", icon: "❄️", mustSpell: true },
-      { en: "warm", he: "חמים", icon: "🌤️", mustSpell: true },
-      { en: "snow", he: "שלג", icon: "☃️", mustSpell: true },
-      { en: "old", he: "זקן / ישן", icon: "👴", mustSpell: true }
     ]
   }
 ];
@@ -273,6 +261,8 @@ function mergeWordLists(bundledLists, savedLists) {
   const listsById = new Map();
   bundledLists.forEach((list) => listsById.set(list.id, list));
   savedLists.forEach((list) => {
+    if (!listsById.has(list.id) && list.id !== "my-saved-words") return;
+
     const bundledList = listsById.get(list.id);
     listsById.set(list.id, {
       ...bundledList,

@@ -2,26 +2,20 @@
   "defaultTestId": "weather-test",
   "tests": {
     "weather-test": {
-      "name": "מבחן מזג אוויר ועונות",
+      "name": "עונות השנה",
       "description": "רשימת המילים המקורית לתרגול כתיבה, בחירה מהירה ומשחק זיכרון.",
       "wordCount": 10,
       "wordsUrl": "data/tests/weather-test.json"
     },
-    "spelling-test": {
-      "name": "מילים שחובה לאיית",
-      "description": "רשימה קצרה שמכילה רק מילים שמסומנות כחובה להכתבה.",
-      "wordCount": 5,
-      "wordsUrl": "data/tests/spelling-test.json"
-    },
-    "jet-2-unit-2-lets-play-review": {
-      "name": "Jet 2 - Unit 2 - Let's Play - Review",
+    "summary-test": {
+      "name": "מבחן מסכם",
       "description": "מילים ומשפטים לחזרה לקראת המבחן ביחידה 2.",
       "reference": {
         "label": "הודעה וקישורים לתרגול יחידה 2",
         "url": "assets/references/jet-2-unit-2-practice-reference.pdf"
       },
       "wordCount": 62,
-      "wordsUrl": "data/tests/jet-2-unit-2-lets-play-review.json"
+      "wordsUrl": "data/tests/summary-test.json"
     }
   }
 }
