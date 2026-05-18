@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="src/styles.css?v=pwa-3">
+  <link rel="stylesheet" href="src/styles.css?v=pwa-8">
 </head>
 <body class="min-h-screen flex flex-col pb-24">
   <nav class="p-6 flex justify-between items-center border-b border-white/5 bg-black/40 backdrop-blur-2xl sticky top-0 z-[100]">
@@ -52,21 +52,24 @@
           <span class="home-mode-icon w-11 h-11 md:w-16 md:h-16 shrink-0 bg-blue-500/20 text-blue-400 rounded-xl md:rounded-2xl flex items-center justify-center text-2xl md:text-3xl md:mb-8 group-hover:scale-110 transition-transform">✍️</span>
           <span class="min-w-0 flex-1 md:block">
             <span class="block text-lg md:text-3xl font-black mb-0.5 md:mb-4">אימון כתיבה</span>
-            <span class="block text-gray-500 text-xs md:text-base leading-snug md:leading-relaxed">תרגול המילים שצריך לדעת לאיית.</span>
+            <span class="block text-gray-500 text-xs leading-snug md:hidden">תרגול המילים שצריך לדעת לאיית.</span>
+            <span class="hidden md:block text-gray-500 leading-relaxed">תרגול המילים שצריך לדעת לאיית. כולל אפשרות לרמז חזותי ברקע.</span>
           </span>
         </button>
         <button type="button" data-mode="quiz" class="home-mode-card spotify-card flex items-center gap-3 md:block p-4 md:p-12 rounded-2xl md:rounded-[3rem] cursor-pointer group text-right">
           <span class="home-mode-icon w-11 h-11 md:w-16 md:h-16 shrink-0 bg-purple-500/20 text-purple-400 rounded-xl md:rounded-2xl flex items-center justify-center text-2xl md:text-3xl md:mb-8 group-hover:scale-110 transition-transform">❓</span>
           <span class="min-w-0 flex-1 md:block">
             <span class="block text-lg md:text-3xl font-black mb-0.5 md:mb-4">בחירה מהירה</span>
-            <span class="block text-gray-500 text-xs md:text-base leading-snug md:leading-relaxed">מבחן אמריקאי מהיר על פירושים.</span>
+            <span class="block text-gray-500 text-xs leading-snug md:hidden">מבחן אמריקאי מהיר על פירושים.</span>
+            <span class="hidden md:block text-gray-500 leading-relaxed">מבחן אמריקאי מהיר. ללמוד את הפירוש של המילים דרך זיהוי מהיר.</span>
           </span>
         </button>
         <button type="button" data-mode="memory" class="home-mode-card spotify-card flex items-center gap-3 md:block p-4 md:p-12 rounded-2xl md:rounded-[3rem] cursor-pointer group text-right">
           <span class="home-mode-icon w-11 h-11 md:w-16 md:h-16 shrink-0 bg-orange-500/20 text-orange-400 rounded-xl md:rounded-2xl flex items-center justify-center text-2xl md:text-3xl md:mb-8 group-hover:scale-110 transition-transform">🃏</span>
           <span class="min-w-0 flex-1 md:block">
             <span class="block text-lg md:text-3xl font-black mb-0.5 md:mb-4">משחק זיכרון</span>
-            <span class="block text-gray-500 text-xs md:text-base leading-snug md:leading-relaxed">התאמת זוגות אנגלית ועברית.</span>
+            <span class="block text-gray-500 text-xs leading-snug md:hidden">התאמת זוגות אנגלית ועברית.</span>
+            <span class="hidden md:block text-gray-500 leading-relaxed">הדרך הכי כיפית ללמוד. התאמת זוגות של אנגלית ועברית בלוח דינמי.</span>
           </span>
         </button>
       </div>
@@ -147,7 +150,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="admin-word-list"></div>
     </section>
 
-    <section id="screen-spelling" class="screen hidden text-center max-w-3xl mx-auto py-10">
+    <section id="screen-spelling" class="screen game-screen hidden text-center max-w-3xl mx-auto">
       <div class="mb-12">
         <div id="spell-icon" class="text-9xl mb-8 drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]"></div>
         <h2 id="spell-he" class="text-6xl font-black mb-4"></h2>
@@ -170,17 +173,21 @@
       </div>
     </section>
 
-    <section id="screen-quiz" class="screen hidden text-center max-w-2xl mx-auto py-4 md:py-10">
-      <div class="quiz-prompt bg-zinc-900/50 p-4 md:p-16 rounded-2xl md:rounded-[4rem] border border-white/5 shadow-2xl mb-3 md:mb-12">
-        <div id="quiz-icon" class="quiz-prompt-icon text-4xl md:text-9xl mb-2 md:mb-8"></div>
-        <h2 id="quiz-en" class="text-3xl md:text-7xl font-black uppercase tracking-tight mb-1 md:mb-4"></h2>
-        <p class="quiz-prompt-hint text-gray-500 font-bold text-sm md:text-xl uppercase tracking-wide md:tracking-widest">מה הפירוש הנכון?</p>
-      </div>
-      <div id="quiz-options" class="quiz-options grid grid-cols-1 gap-2 md:gap-4"></div>
-      <div id="quiz-feedback" class="quiz-feedback hidden mt-4 md:mt-6" aria-live="polite">
-        <p id="quiz-feedback-title" class="quiz-feedback-title font-black text-red-400 text-lg mb-2">לא נכון</p>
-        <p id="quiz-feedback-answer" class="quiz-feedback-answer text-white font-bold text-xl mb-4"></p>
-        <button type="button" id="quiz-next" class="btn-spotify w-full text-lg py-4 min-h-[52px]">המילה הבאה</button>
+    <section id="screen-quiz" class="screen game-screen hidden quiz-screen text-center mx-auto w-full">
+      <div class="quiz-layout">
+        <div class="quiz-prompt bg-zinc-900/50 p-4 rounded-2xl border border-white/5 shadow-2xl">
+          <div id="quiz-icon" class="quiz-prompt-icon text-4xl mb-2"></div>
+          <h2 id="quiz-en" class="text-3xl font-black uppercase tracking-tight mb-1"></h2>
+          <p class="quiz-prompt-hint text-gray-500 font-bold text-sm uppercase tracking-wide">מה הפירוש הנכון?</p>
+        </div>
+        <div class="quiz-answers">
+          <div id="quiz-options" class="quiz-options grid grid-cols-2 gap-2"></div>
+          <div id="quiz-feedback" class="quiz-feedback hidden" aria-live="polite">
+            <p id="quiz-feedback-title" class="quiz-feedback-title font-black text-red-400 text-lg mb-2">לא נכון</p>
+            <p id="quiz-feedback-answer" class="quiz-feedback-answer text-white font-bold text-xl mb-4"></p>
+            <button type="button" id="quiz-next" class="btn-spotify w-full text-lg py-4 min-h-[52px]">המילה הבאה</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -195,12 +202,14 @@
       </div>
     </section>
 
-    <section id="screen-memory" class="screen hidden">
-      <header class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2 sm:gap-4 mb-4 md:mb-10">
-        <h2 class="text-3xl md:text-5xl font-black">משחק זיכרון</h2>
-        <div class="text-gray-500 font-bold text-sm sm:text-base" id="memory-progress">מצאת 0 מתוך 0 זוגות</div>
+    <section id="screen-memory" class="screen game-screen hidden max-w-5xl mx-auto w-full">
+      <header class="memory-header flex flex-row justify-between items-center gap-3 shrink-0 mb-2">
+        <h2 class="text-xl md:text-2xl font-black">משחק זיכרון</h2>
+        <p class="text-gray-500 font-bold text-sm" id="memory-progress">מצאת 0 מתוך 0 זוגות</p>
       </header>
-      <div id="memory-grid" class="memory-grid"></div>
+      <div class="memory-board">
+        <div id="memory-grid" class="memory-grid"></div>
+      </div>
     </section>
   </main>
 
@@ -219,6 +228,6 @@
     </div>
   </div>
 
-  <script src="src/app.js?v=pwa-3"></script>
+  <script src="src/app.js?v=pwa-6"></script>
 </body>
 </html>

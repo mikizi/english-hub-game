@@ -90,7 +90,7 @@ const elements = {
 };
 
 document.addEventListener("click", (event) => {
-  const screenButton = event.target.closest("[data-screen]");
+  const screenButton = event.target.closest("button[data-screen], a[data-screen]");
   if (screenButton) {
     showScreen(screenButton.dataset.screen);
     return;
@@ -385,6 +385,7 @@ function renderSelectOptions(select, selectedValue) {
 
 function showScreen(id) {
   state.currentMode = id;
+  document.body.dataset.activeScreen = id;
   document.querySelectorAll(".screen").forEach((screen) => screen.classList.add("hidden"));
   document.getElementById(`screen-${id}`).classList.remove("hidden");
   window.scrollTo(0, 0);
@@ -635,6 +636,14 @@ function finishQuizSession() {
   speak(percent >= 70 ? "Great job!" : "Keep practicing!");
 }
 
+function updateMemoryGridLayout(cardCount) {
+  const columns = 4;
+  const rows = Math.max(1, Math.ceil(cardCount / columns));
+
+  elements.memoryGrid.style.setProperty("--memory-cols", String(columns));
+  elements.memoryGrid.style.setProperty("--memory-rows", String(rows));
+}
+
 function initMemory() {
   const cards = state.activeList.flatMap((word, index) => [
     { id: index, text: word.en, type: "en", icon: word.icon },
@@ -643,6 +652,8 @@ function initMemory() {
 
   elements.memoryProgress.textContent = `מצאת 0 מתוך ${state.activeList.length} זוגות`;
   elements.memoryGrid.innerHTML = "";
+
+  updateMemoryGridLayout(cards.length);
 
   cards
     .sort(() => Math.random() - 0.5)
