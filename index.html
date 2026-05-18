@@ -42,40 +42,32 @@
 
   <main class="flex-1 p-6 md:p-12 max-w-6xl mx-auto w-full">
     <section id="screen-home" class="screen animate-in fade-in duration-500">
-      <header class="mb-12">
-        <h1 class="text-6xl font-black mb-4 tracking-tight">מוכנים ללמוד?</h1>
-        <p class="text-gray-400 text-xl max-w-2xl">בחר את שיטת התרגול המועדפת עליך והתחל לשבור שיאים.</p>
+      <header class="mb-5 md:mb-12">
+        <h1 class="text-3xl md:text-6xl font-black mb-2 md:mb-4 tracking-tight">מוכנים ללמוד?</h1>
+        <p class="text-gray-400 text-sm md:text-xl max-w-2xl">בחר את שיטת התרגול המועדפת עליך והתחל לשבור שיאים.</p>
       </header>
 
-      <section class="mb-10 bg-zinc-900/50 border border-white/5 rounded-[2rem] p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
-        <div>
-          <h2 class="text-2xl font-black mb-1">רשימת מילים</h2>
-          <p id="word-list-description" class="text-gray-500 font-bold">טוען רשימות...</p>
-          <a id="word-list-reference" href="#" target="_blank" rel="noopener" class="hidden mt-3 text-[#1db954] font-black inline-flex items-center gap-2 hover:text-[#1ed760]">
-            פתח חומר עזר
-          </a>
-        </div>
-        <label class="min-w-full md:min-w-[320px]">
-          <span class="sr-only">בחר רשימת מילים</span>
-          <select id="word-list-select" class="admin-input text-lg font-bold"></select>
-        </label>
-      </section>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <button type="button" data-mode="spelling" class="spotify-card p-12 rounded-[3rem] cursor-pointer group text-right">
-          <span class="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">✍️</span>
-          <span class="block text-3xl font-black mb-4">אימון כתיבה</span>
-          <span class="block text-gray-500 leading-relaxed">תרגול המילים שצריך לדעת לאיית. כולל אפשרות לרמז חזותי ברקע.</span>
+      <div class="home-mode-grid grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-8">
+        <button type="button" data-mode="spelling" class="home-mode-card spotify-card flex items-center gap-3 md:block p-4 md:p-12 rounded-2xl md:rounded-[3rem] cursor-pointer group text-right">
+          <span class="home-mode-icon w-11 h-11 md:w-16 md:h-16 shrink-0 bg-blue-500/20 text-blue-400 rounded-xl md:rounded-2xl flex items-center justify-center text-2xl md:text-3xl md:mb-8 group-hover:scale-110 transition-transform">✍️</span>
+          <span class="min-w-0 flex-1 md:block">
+            <span class="block text-lg md:text-3xl font-black mb-0.5 md:mb-4">אימון כתיבה</span>
+            <span class="block text-gray-500 text-xs md:text-base leading-snug md:leading-relaxed">תרגול המילים שצריך לדעת לאיית.</span>
+          </span>
         </button>
-        <button type="button" data-mode="quiz" class="spotify-card p-12 rounded-[3rem] cursor-pointer group text-right">
-          <span class="w-16 h-16 bg-purple-500/20 text-purple-400 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">❓</span>
-          <span class="block text-3xl font-black mb-4">בחירה מהירה</span>
-          <span class="block text-gray-500 leading-relaxed">מבחן אמריקאי מהיר. ללמוד את הפירוש של המילים דרך זיהוי מהיר.</span>
+        <button type="button" data-mode="quiz" class="home-mode-card spotify-card flex items-center gap-3 md:block p-4 md:p-12 rounded-2xl md:rounded-[3rem] cursor-pointer group text-right">
+          <span class="home-mode-icon w-11 h-11 md:w-16 md:h-16 shrink-0 bg-purple-500/20 text-purple-400 rounded-xl md:rounded-2xl flex items-center justify-center text-2xl md:text-3xl md:mb-8 group-hover:scale-110 transition-transform">❓</span>
+          <span class="min-w-0 flex-1 md:block">
+            <span class="block text-lg md:text-3xl font-black mb-0.5 md:mb-4">בחירה מהירה</span>
+            <span class="block text-gray-500 text-xs md:text-base leading-snug md:leading-relaxed">מבחן אמריקאי מהיר על פירושים.</span>
+          </span>
         </button>
-        <button type="button" data-mode="memory" class="spotify-card p-12 rounded-[3rem] cursor-pointer group text-right">
-          <span class="w-16 h-16 bg-orange-500/20 text-orange-400 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">🃏</span>
-          <span class="block text-3xl font-black mb-4">משחק זיכרון</span>
-          <span class="block text-gray-500 leading-relaxed">הדרך הכי כיפית ללמוד. התאמת זוגות של אנגלית ועברית בלוח דינמי.</span>
+        <button type="button" data-mode="memory" class="home-mode-card spotify-card flex items-center gap-3 md:block p-4 md:p-12 rounded-2xl md:rounded-[3rem] cursor-pointer group text-right">
+          <span class="home-mode-icon w-11 h-11 md:w-16 md:h-16 shrink-0 bg-orange-500/20 text-orange-400 rounded-xl md:rounded-2xl flex items-center justify-center text-2xl md:text-3xl md:mb-8 group-hover:scale-110 transition-transform">🃏</span>
+          <span class="min-w-0 flex-1 md:block">
+            <span class="block text-lg md:text-3xl font-black mb-0.5 md:mb-4">משחק זיכרון</span>
+            <span class="block text-gray-500 text-xs md:text-base leading-snug md:leading-relaxed">התאמת זוגות אנגלית ועברית.</span>
+          </span>
         </button>
       </div>
     </section>
@@ -90,19 +82,17 @@
       </div>
 
       <div class="mb-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <label class="bg-zinc-900/50 p-6 rounded-3xl border border-white/5 flex flex-col gap-3 cursor-pointer">
+        <label class="bg-zinc-900/50 p-6 rounded-3xl border border-white/5 flex flex-col gap-3 md:col-span-2">
           <span>
-            <span class="block font-bold">רשימת ברירת מחדל</span>
-            <span class="block text-xs text-gray-500">הרשימה שתיפתח אוטומטית בכל כניסה לאפליקציה</span>
+            <span class="block font-bold">רשימת מילים</span>
+            <span class="block text-xs text-gray-500">הרשימה לתרגול, מבחנים ומשחק זיכרון — נשמרת לביקורים הבאים</span>
           </span>
-          <select id="settings-default-list" class="admin-input font-bold"></select>
+          <select id="word-list-select" class="admin-input font-bold text-lg"></select>
+          <p id="word-list-description" class="text-gray-500 font-bold text-sm">טוען רשימות...</p>
+          <a id="word-list-reference" href="#" target="_blank" rel="noopener" class="hidden text-[#1db954] font-black inline-flex items-center gap-2 hover:text-[#1ed760] text-sm">
+            פתח חומר עזר
+          </a>
         </label>
-
-        <div class="bg-zinc-900/50 p-6 rounded-3xl border border-white/5 flex flex-col gap-2">
-          <span class="block font-bold">הרשימה שנערכת עכשיו</span>
-          <span id="admin-active-list-name" class="text-[#1db954] text-xl font-black"></span>
-          <span id="admin-active-list-count" class="text-xs text-gray-500"></span>
-        </div>
 
         <label class="bg-zinc-900/50 p-6 rounded-3xl border border-white/5 flex items-center gap-4 cursor-pointer">
           <span class="relative inline-flex items-center">
@@ -164,29 +154,51 @@
         <p class="text-gray-500 font-bold">איך כותבים את זה באנגלית?</p>
       </div>
 
-      <div class="relative mb-12">
-        <input type="text" id="spell-input" autocomplete="off" class="w-full bg-transparent border-b-8 border-white/10 text-5xl md:text-7xl font-black text-center focus:outline-none focus:border-[#1db954] uppercase tracking-[0.2em] pb-6 relative z-10 transition-all">
+      <div class="relative mb-8">
+        <input type="text" id="spell-input" autocomplete="off" autocapitalize="characters" enterkeyhint="done" inputmode="text" class="w-full bg-transparent border-b-8 border-white/10 text-5xl md:text-7xl font-black text-center focus:outline-none focus:border-[#1db954] uppercase tracking-[0.2em] pb-6 relative z-10 transition-all">
         <div id="spell-ghost" class="ghost-text text-5xl md:text-7xl font-black uppercase"></div>
       </div>
 
-      <button type="button" id="speak-current-word" class="bg-white/5 hover:bg-white/10 p-6 rounded-3xl transition-all group" aria-label="השמע מילה">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="group-hover:scale-110 transition-transform" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-      </button>
+      <div class="flex flex-col items-stretch gap-4 max-w-sm mx-auto">
+        <button type="button" id="spell-submit" class="btn-spotify text-xl py-5 min-h-[56px]">
+          בדוק תשובה
+        </button>
+        <button type="button" id="speak-current-word" class="bg-white/5 hover:bg-white/10 p-5 rounded-3xl transition-all group flex items-center justify-center gap-3" aria-label="השמע מילה">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="group-hover:scale-110 transition-transform" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          <span class="font-bold text-gray-300">השמע שוב</span>
+        </button>
+      </div>
     </section>
 
-    <section id="screen-quiz" class="screen hidden text-center max-w-2xl mx-auto py-10">
-      <div class="bg-zinc-900/50 p-10 md:p-16 rounded-[4rem] border border-white/5 shadow-2xl mb-12">
-        <div id="quiz-icon" class="text-9xl mb-8"></div>
-        <h2 id="quiz-en" class="text-5xl md:text-7xl font-black uppercase tracking-tight mb-4"></h2>
-        <p class="text-gray-500 font-bold text-xl uppercase tracking-widest">מה הפירוש הנכון?</p>
+    <section id="screen-quiz" class="screen hidden text-center max-w-2xl mx-auto py-4 md:py-10">
+      <div class="quiz-prompt bg-zinc-900/50 p-4 md:p-16 rounded-2xl md:rounded-[4rem] border border-white/5 shadow-2xl mb-3 md:mb-12">
+        <div id="quiz-icon" class="quiz-prompt-icon text-4xl md:text-9xl mb-2 md:mb-8"></div>
+        <h2 id="quiz-en" class="text-3xl md:text-7xl font-black uppercase tracking-tight mb-1 md:mb-4"></h2>
+        <p class="quiz-prompt-hint text-gray-500 font-bold text-sm md:text-xl uppercase tracking-wide md:tracking-widest">מה הפירוש הנכון?</p>
       </div>
-      <div id="quiz-options" class="grid grid-cols-1 gap-4"></div>
+      <div id="quiz-options" class="quiz-options grid grid-cols-1 gap-2 md:gap-4"></div>
+      <div id="quiz-feedback" class="quiz-feedback hidden mt-4 md:mt-6" aria-live="polite">
+        <p id="quiz-feedback-title" class="quiz-feedback-title font-black text-red-400 text-lg mb-2">לא נכון</p>
+        <p id="quiz-feedback-answer" class="quiz-feedback-answer text-white font-bold text-xl mb-4"></p>
+        <button type="button" id="quiz-next" class="btn-spotify w-full text-lg py-4 min-h-[52px]">המילה הבאה</button>
+      </div>
+    </section>
+
+    <section id="screen-results" class="screen hidden text-center max-w-lg mx-auto py-6 md:py-10">
+      <div class="bg-zinc-900/50 rounded-3xl border border-white/5 p-6 md:p-10 shadow-2xl">
+        <p id="results-icon" class="text-6xl mb-4">📊</p>
+        <h2 id="results-title" class="text-3xl md:text-4xl font-black mb-2">סיימת את המבחן!</h2>
+        <p id="results-grade" class="text-5xl md:text-6xl font-black text-[#1db954] mb-2"></p>
+        <p id="results-summary" class="text-gray-300 font-bold text-lg mb-2"></p>
+        <p id="results-detail" class="text-gray-500 text-sm mb-8"></p>
+        <button type="button" data-screen="home" class="btn-spotify w-full text-lg py-4">חזרה לבית</button>
+      </div>
     </section>
 
     <section id="screen-memory" class="screen hidden">
-      <header class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-10">
-        <h2 class="text-5xl font-black">משחק זיכרון</h2>
-        <div class="text-gray-500 font-bold" id="memory-progress">מצאת 0 מתוך 0 זוגות</div>
+      <header class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2 sm:gap-4 mb-4 md:mb-10">
+        <h2 class="text-3xl md:text-5xl font-black">משחק זיכרון</h2>
+        <div class="text-gray-500 font-bold text-sm sm:text-base" id="memory-progress">מצאת 0 מתוך 0 זוגות</div>
       </header>
       <div id="memory-grid" class="memory-grid"></div>
     </section>

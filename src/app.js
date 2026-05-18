@@ -44,7 +44,10 @@ const state = {
   currentIdx: 0,
   score: 0,
   memoryFlipped: [],
-  memoryMatched: 0
+  memoryMatched: 0,
+  quizCorrect: 0,
+  quizWrong: 0,
+  quizLocked: false
 };
 
 const elements = {
@@ -64,16 +67,23 @@ const elements = {
   addMustSpell: document.getElementById("add-mustSpell"),
   settingsShowIcons: document.getElementById("settings-show-icons"),
   settingsShowGhost: document.getElementById("settings-show-ghost"),
-  settingsDefaultList: document.getElementById("settings-default-list"),
-  adminActiveListName: document.getElementById("admin-active-list-name"),
-  adminActiveListCount: document.getElementById("admin-active-list-count"),
   spellIcon: document.getElementById("spell-icon"),
   spellHe: document.getElementById("spell-he"),
   spellInput: document.getElementById("spell-input"),
+  spellSubmit: document.getElementById("spell-submit"),
   spellGhost: document.getElementById("spell-ghost"),
   quizIcon: document.getElementById("quiz-icon"),
   quizEn: document.getElementById("quiz-en"),
   quizOptions: document.getElementById("quiz-options"),
+  quizFeedback: document.getElementById("quiz-feedback"),
+  quizFeedbackTitle: document.getElementById("quiz-feedback-title"),
+  quizFeedbackAnswer: document.getElementById("quiz-feedback-answer"),
+  quizNext: document.getElementById("quiz-next"),
+  resultsIcon: document.getElementById("results-icon"),
+  resultsTitle: document.getElementById("results-title"),
+  resultsGrade: document.getElementById("results-grade"),
+  resultsSummary: document.getElementById("results-summary"),
+  resultsDetail: document.getElementById("results-detail"),
   memoryProgress: document.getElementById("memory-progress"),
   memoryGrid: document.getElementById("memory-grid"),
   speakCurrentWord: document.getElementById("speak-current-word")
@@ -106,10 +116,6 @@ document.addEventListener("change", (event) => {
     return;
   }
 
-  if (event.target === elements.settingsDefaultList) {
-    appSettings.defaultListId = event.target.value;
-    selectWordList(event.target.value);
-  }
 });
 
 elements.addWordForm.addEventListener("submit", (event) => {
@@ -119,27 +125,44 @@ elements.addWordForm.addEventListener("submit", (event) => {
 
 elements.spellInput.addEventListener("keydown", (event) => {
   if (event.key !== "Enter") return;
+  event.preventDefault();
+  submitSpellingAnswer();
+});
 
-  const typedWord = event.target.value.trim().toLowerCase();
-  const correctWord = state.activeList[state.currentIdx].en.toLowerCase();
+elements.spellSubmit.addEventListener("click", submitSpellingAnswer);
+elements.speakCurrentWord.addEventListener("click", speakCurrentWord);
+elements.quizNext.addEventListener("click", advanceQuizAfterWrong);
+
+function submitSpellingAnswer() {
+  const currentWord = state.activeList[state.currentIdx];
+  if (!currentWord) return;
+
+  const input = elements.spellInput;
+  const typedWord = input.value.trim().toLowerCase();
+  const correctWord = currentWord.en.toLowerCase();
+
+  if (!typedWord) {
+    input.classList.add("border-red-500", "shake");
+    setTimeout(() => input.classList.remove("border-red-500", "shake"), 500);
+    return;
+  }
 
   if (typedWord === correctWord) {
     state.score += 100;
     state.currentIdx += 1;
     updateScore();
-    event.target.classList.add("border-[#1db954]");
+    input.classList.add("border-[#1db954]");
+    input.blur();
     setTimeout(() => {
-      event.target.classList.remove("border-[#1db954]");
+      input.classList.remove("border-[#1db954]");
       loadSpelling();
     }, 400);
     return;
   }
 
-  event.target.classList.add("border-red-500", "shake");
-  setTimeout(() => event.target.classList.remove("border-red-500", "shake"), 500);
-});
-
-elements.speakCurrentWord.addEventListener("click", speakCurrentWord);
+  input.classList.add("border-red-500", "shake");
+  setTimeout(() => input.classList.remove("border-red-500", "shake"), 500);
+}
 
 function readJson(key, fallback) {
   try {
@@ -296,17 +319,17 @@ function syncSelectedList() {
     wordLists = sanitizeWordLists(fallbackWordLists);
   }
 
-  const defaultExists = wordLists.some((list) => list.id === appSettings.defaultListId);
+  const savedListId = appSettings.selectedListId || appSettings.defaultListId;
+  const listExists = wordLists.some((list) => list.id === savedListId);
 
-  if (!defaultExists) {
-    const configuredDefault = wordLists.some((list) => list.id === bundledDefaultTestId)
+  const activeListId = listExists
+    ? savedListId
+    : wordLists.some((list) => list.id === bundledDefaultTestId)
       ? bundledDefaultTestId
       : wordLists[0].id;
-    appSettings.defaultListId = configuredDefault;
-  }
 
-  appSettings.selectedListId = appSettings.defaultListId;
-
+  appSettings.defaultListId = activeListId;
+  appSettings.selectedListId = activeListId;
   saveSettings();
 }
 
@@ -322,6 +345,7 @@ function selectWordList(listId) {
   if (!wordLists.some((list) => list.id === listId)) return;
 
   appSettings.selectedListId = listId;
+  appSettings.defaultListId = listId;
   saveSettings();
   renderListControls();
   updateAdminUI();
@@ -332,7 +356,6 @@ function renderListControls() {
   const currentList = getCurrentList();
 
   renderSelectOptions(elements.wordListSelect, appSettings.selectedListId);
-  renderSelectOptions(elements.settingsDefaultList, appSettings.defaultListId);
   elements.wordListDescription.textContent = currentList.description || `${currentList.words.length} מילים לתרגול`;
   renderReferenceLink(currentList);
 }
@@ -381,8 +404,6 @@ function updateAdminUI() {
 
   elements.settingsShowIcons.checked = appSettings.showIcons;
   elements.settingsShowGhost.checked = appSettings.showGhost;
-  elements.adminActiveListName.textContent = currentList.name;
-  elements.adminActiveListCount.textContent = `${words.length} מילים ברשימה`;
   renderListControls();
   elements.adminWordList.innerHTML = "";
 
@@ -451,6 +472,9 @@ function startMode(mode) {
       alert("צריך לבחור רשימה עם מילים!");
       return;
     }
+    state.quizCorrect = 0;
+    state.quizWrong = 0;
+    state.quizLocked = false;
     showScreen("quiz");
     loadQuiz();
   }
@@ -489,12 +513,14 @@ function loadSpelling() {
 
 function loadQuiz() {
   if (state.currentIdx >= state.activeList.length) {
-    finishGame();
+    finishQuizSession();
     return;
   }
 
   const words = getWords();
   const currentWord = state.activeList[state.currentIdx];
+  state.quizLocked = false;
+  elements.quizFeedback.classList.add("hidden");
   elements.quizEn.textContent = currentWord.en;
   elements.quizIcon.textContent = appSettings.showIcons ? currentWord.icon || "❓" : "❓";
 
@@ -515,24 +541,98 @@ function loadQuiz() {
     .forEach((option) => {
       const button = document.createElement("button");
       button.type = "button";
-      button.className = "spotify-card p-6 md:p-8 rounded-3xl text-2xl md:text-3xl font-black hover:bg-[#1db954] hover:text-black transition-all border-none shadow-xl";
+      button.className = "quiz-option spotify-card font-black transition-all border-none shadow-xl";
       button.textContent = option;
       button.addEventListener("click", () => handleQuizAnswer(button, option, currentWord));
       elements.quizOptions.appendChild(button);
     });
 }
 
+function getQuizOptionButtons() {
+  return [...elements.quizOptions.querySelectorAll(".quiz-option")];
+}
+
+function lockQuizOptions() {
+  getQuizOptionButtons().forEach((optionButton) => {
+    optionButton.disabled = true;
+  });
+}
+
 function handleQuizAnswer(button, selectedOption, currentWord) {
-  if (selectedOption === currentWord.he) {
+  if (state.quizLocked) return;
+
+  const isCorrect = selectedOption === currentWord.he;
+  state.quizLocked = true;
+  lockQuizOptions();
+
+  if (isCorrect) {
+    state.quizCorrect += 1;
     state.score += 50;
-    state.currentIdx += 1;
     updateScore();
-    loadQuiz();
+    button.classList.add("quiz-option--correct");
+    button.blur();
+    updateProgress(
+      ((state.currentIdx + 1) / state.activeList.length) * 100,
+      `נכון! ${currentWord.en} = ${currentWord.he}`,
+      "✅"
+    );
+    window.setTimeout(() => {
+      state.currentIdx += 1;
+      loadQuiz();
+    }, 750);
     return;
   }
 
-  button.classList.add("bg-red-500/20", "text-red-500");
-  button.disabled = true;
+  state.quizWrong += 1;
+  button.classList.add("quiz-option--wrong");
+  button.blur();
+
+  getQuizOptionButtons().forEach((optionButton) => {
+    if (optionButton === button) return;
+    if (optionButton.textContent === currentWord.he) {
+      optionButton.classList.add("quiz-option--correct");
+      return;
+    }
+    optionButton.classList.add("quiz-option--dim");
+  });
+
+  elements.quizFeedbackTitle.textContent = "לא נכון";
+  elements.quizFeedbackAnswer.textContent = `התשובה הנכונה: ${currentWord.he}`;
+  elements.quizFeedback.classList.remove("hidden");
+  updateProgress(
+    (state.currentIdx / state.activeList.length) * 100,
+    `טעות — ${currentWord.en} = ${currentWord.he}`,
+    "❌"
+  );
+}
+
+function advanceQuizAfterWrong() {
+  if (!state.quizLocked) return;
+  state.currentIdx += 1;
+  loadQuiz();
+}
+
+function getQuizGradeMessage(percent) {
+  if (percent >= 90) return "מעולה! שליטה מצוינת במילים.";
+  if (percent >= 70) return "עבודה טובה! עוד קצת תרגול ותהיה מושלם.";
+  if (percent >= 50) return "לא רע — כדאי לחזור על המילים שפיספסת.";
+  return "כדאי לתרגל שוב את הרשימה לפני המבחן.";
+}
+
+function finishQuizSession() {
+  const total = state.quizCorrect + state.quizWrong;
+  const percent = total > 0 ? Math.round((state.quizCorrect / total) * 100) : 0;
+  const message = getQuizGradeMessage(percent);
+
+  elements.resultsIcon.textContent = percent >= 70 ? "🏆" : percent >= 50 ? "📚" : "💪";
+  elements.resultsGrade.textContent = `${percent}%`;
+  elements.resultsGrade.style.color = percent >= 70 ? "#1db954" : percent >= 50 ? "#facc15" : "#f87171";
+  elements.resultsSummary.textContent = `${state.quizCorrect} נכונות מתוך ${total}`;
+  elements.resultsDetail.textContent = message;
+
+  showScreen("results");
+  updateProgress(100, `ציון: ${percent}%`, percent >= 70 ? "🏆" : "📊");
+  speak(percent >= 70 ? "Great job!" : "Keep practicing!");
 }
 
 function initMemory() {
@@ -554,8 +654,8 @@ function initMemory() {
         <span class="card-inner">
           <span class="card-front">?</span>
           <span class="card-back">
-            <span class="text-2xl mb-2">${appSettings.showIcons ? cardData.icon || "" : ""}</span>
-            <span class="text-lg font-black uppercase text-center">${cardData.text}</span>
+            <span class="memory-card-icon">${appSettings.showIcons ? cardData.icon || "" : ""}</span>
+            <span class="memory-card-text">${cardData.text}</span>
           </span>
         </span>
       `;
@@ -636,6 +736,11 @@ function updateProgress(percent, text, icon) {
 }
 
 function finishGame() {
+  if (state.currentMode === "quiz") {
+    finishQuizSession();
+    return;
+  }
+
   showScreen("home");
   updateProgress(100, "סיימת בהצלחה!", "🏆");
   speak("Excellent job! You are a champion!");
