@@ -1,12 +1,6 @@
 {
-  "defaultTestId": "weather-test",
+  "defaultTestId": "summary-test",
   "tests": {
-    "weather-test": {
-      "name": "עונות השנה",
-      "description": "רשימת המילים המקורית לתרגול כתיבה, בחירה מהירה ומשחק זיכרון.",
-      "wordCount": 10,
-      "wordsUrl": "data/tests/weather-test.json"
-    },
     "summary-test": {
       "name": "מבחן מסכם",
       "description": "מילים ומשפטים לחזרה לקראת המבחן ביחידה 2.",
@@ -16,6 +10,12 @@
       },
       "wordCount": 62,
       "wordsUrl": "data/tests/summary-test.json"
+    },
+    "weather-test": {
+      "name": "עונות השנה",
+      "description": "רשימת המילים המקורית לתרגול כתיבה, בחירה מהירה ומשחק זיכרון.",
+      "wordCount": 10,
+      "wordsUrl": "data/tests/weather-test.json"
     }
   }
 }

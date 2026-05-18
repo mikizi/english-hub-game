@@ -30,11 +30,12 @@ const fallbackWordLists = [
 const defaultSettings = {
   showIcons: true,
   showGhost: true,
-  defaultListId: "weather-test",
-  selectedListId: "weather-test"
+  defaultListId: "summary-test",
+  selectedListId: "summary-test"
 };
 
 let wordLists = [];
+let bundledDefaultTestId = defaultSettings.defaultListId;
 let appSettings = normalizeSettings(readJson(STORAGE_KEYS.settings, defaultSettings));
 
 const state = {
@@ -167,6 +168,7 @@ async function loadWordLists() {
     const response = await fetch(WORD_LISTS_URL);
     if (!response.ok) throw new Error("Could not load word lists");
     const data = await response.json();
+    if (data.defaultTestId) bundledDefaultTestId = data.defaultTestId;
     bundledLists = await hydrateWordLists(readWordListIndex(data));
   } catch {
     bundledLists = sanitizeWordLists(fallbackWordLists);
@@ -297,7 +299,10 @@ function syncSelectedList() {
   const defaultExists = wordLists.some((list) => list.id === appSettings.defaultListId);
 
   if (!defaultExists) {
-    appSettings.defaultListId = wordLists[0].id;
+    const configuredDefault = wordLists.some((list) => list.id === bundledDefaultTestId)
+      ? bundledDefaultTestId
+      : wordLists[0].id;
+    appSettings.defaultListId = configuredDefault;
   }
 
   appSettings.selectedListId = appSettings.defaultListId;
