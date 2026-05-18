@@ -9,8 +9,8 @@
   "dir": "rtl",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#0c0c0c",
-  "theme_color": "#1db954",
+  "background_color": "#120f2c",
+  "theme_color": "#120f2c",
   "categories": ["education", "games"],
   "icons": [
     {

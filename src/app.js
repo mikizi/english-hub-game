@@ -38,8 +38,12 @@ let wordLists = [];
 let bundledDefaultTestId = defaultSettings.defaultListId;
 let appSettings = normalizeSettings(readJson(STORAGE_KEYS.settings, defaultSettings));
 
+const SCREEN_IDS = ["home", "admin", "spelling", "quiz", "memory", "results"];
+
 const state = {
   currentMode: "home",
+  activeGame: null,
+  allowResults: false,
   activeList: [],
   currentIdx: 0,
   score: 0,
@@ -49,6 +53,57 @@ const state = {
   quizWrong: 0,
   quizLocked: false
 };
+
+function getScreenFromHash() {
+  const id = location.hash.replace(/^#\/?/, "").trim() || "home";
+  return SCREEN_IDS.includes(id) ? id : "home";
+}
+
+function isScreenAllowed(id) {
+  if (id === "home" || id === "admin") return true;
+  if (id === "results") return state.allowResults;
+  return state.activeGame === id;
+}
+
+function normalizeRoute(id) {
+  return isScreenAllowed(id) ? id : "home";
+}
+
+function navigate(screenId, { replace = false } = {}) {
+  const id = normalizeRoute(screenId);
+  const hash = `#/${id}`;
+
+  if (!replace && location.hash === hash && state.currentMode === id) {
+    return;
+  }
+
+  if (replace) {
+    history.replaceState({ screen: id }, "", hash);
+  } else {
+    history.pushState({ screen: id }, "", hash);
+  }
+
+  showScreen(id);
+}
+
+function resolveRouteFromHistory() {
+  const requested = history.state?.screen ?? getScreenFromHash();
+  const screenId = normalizeRoute(requested);
+
+  if (screenId !== requested) {
+    history.replaceState({ screen: screenId }, "", `#/${screenId}`);
+  }
+
+  showScreen(screenId);
+}
+
+window.addEventListener("popstate", () => {
+  resolveRouteFromHistory();
+});
+
+window.addEventListener("hashchange", () => {
+  resolveRouteFromHistory();
+});
 
 const elements = {
   globalScore: document.getElementById("global-score"),
@@ -92,7 +147,7 @@ const elements = {
 document.addEventListener("click", (event) => {
   const screenButton = event.target.closest("button[data-screen], a[data-screen]");
   if (screenButton) {
-    showScreen(screenButton.dataset.screen);
+    navigate(screenButton.dataset.screen);
     return;
   }
 
@@ -151,10 +206,10 @@ function submitSpellingAnswer() {
     state.score += 100;
     state.currentIdx += 1;
     updateScore();
-    input.classList.add("border-[#1db954]");
+    input.classList.add("input-success");
     input.blur();
     setTimeout(() => {
-      input.classList.remove("border-[#1db954]");
+      input.classList.remove("input-success");
       loadSpelling();
     }, 400);
     return;
@@ -384,19 +439,33 @@ function renderSelectOptions(select, selectedValue) {
 }
 
 function showScreen(id) {
-  state.currentMode = id;
-  document.body.dataset.activeScreen = id;
-  document.querySelectorAll(".screen").forEach((screen) => screen.classList.add("hidden"));
-  document.getElementById(`screen-${id}`).classList.remove("hidden");
-  window.scrollTo(0, 0);
+  const screenId = normalizeRoute(id);
+  state.currentMode = screenId;
 
-  if (id === "home") {
+  document.body.dataset.activeScreen = screenId;
+  document.querySelectorAll(".screen").forEach((screen) => screen.classList.add("hidden"));
+  document.getElementById(`screen-${screenId}`).classList.remove("hidden");
+  window.scrollTo(0, 0);
+  document.title = screenId === "home" ? "האב אנגלית" : `האב אנגלית · ${getScreenTitle(screenId)}`;
+
+  if (screenId === "home") {
     updateProgress(0, `מוכן לתרגול: ${getCurrentList().name}`, "⭐");
   }
 
-  if (id === "admin") {
+  if (screenId === "admin") {
     updateAdminUI();
   }
+}
+
+function getScreenTitle(screenId) {
+  const titles = {
+    admin: "ניהול",
+    spelling: "אימון כתיבה",
+    quiz: "בחירה מהירה",
+    memory: "משחק זיכרון",
+    results: "תוצאות"
+  };
+  return titles[screenId] || "";
 }
 
 function updateAdminUI() {
@@ -410,13 +479,13 @@ function updateAdminUI() {
 
   words.forEach((word, index) => {
     const card = document.createElement("article");
-    card.className = "spotify-card p-6 rounded-3xl flex justify-between items-center";
+    card.className = "admin-word-card spotify-card p-5 md:p-6 rounded-2xl flex justify-between items-center gap-3";
     card.innerHTML = `
-      <div class="flex items-center gap-4">
-        <div class="text-3xl">${word.icon || "📝"}</div>
-        <div>
-          <p class="font-black text-lg uppercase leading-none mb-1">${word.en}</p>
-          <p class="text-gray-500 font-bold">${word.he}</p>
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="text-2xl md:text-3xl shrink-0">${word.icon || "📝"}</div>
+        <div class="min-w-0">
+          <p class="font-black text-base md:text-lg uppercase leading-none mb-1 truncate">${word.en}</p>
+          <p class="text-on-surface-variant font-bold truncate">${word.he}</p>
         </div>
       </div>
       <div class="flex items-center gap-3">
@@ -463,7 +532,9 @@ function startMode(mode) {
       alert("צריך להוסיף מילים להכתבה בניהול!");
       return;
     }
-    showScreen("spelling");
+    state.activeGame = "spelling";
+    state.allowResults = false;
+    navigate("spelling");
     loadSpelling();
   }
 
@@ -476,7 +547,9 @@ function startMode(mode) {
     state.quizCorrect = 0;
     state.quizWrong = 0;
     state.quizLocked = false;
-    showScreen("quiz");
+    state.activeGame = "quiz";
+    state.allowResults = false;
+    navigate("quiz");
     loadQuiz();
   }
 
@@ -486,7 +559,9 @@ function startMode(mode) {
       alert("צריך לבחור רשימה עם מילים!");
       return;
     }
-    showScreen("memory");
+    state.activeGame = "memory";
+    state.allowResults = false;
+    navigate("memory");
     initMemory();
   }
 }
@@ -627,11 +702,15 @@ function finishQuizSession() {
 
   elements.resultsIcon.textContent = percent >= 70 ? "🏆" : percent >= 50 ? "📚" : "💪";
   elements.resultsGrade.textContent = `${percent}%`;
-  elements.resultsGrade.style.color = percent >= 70 ? "#1db954" : percent >= 50 ? "#facc15" : "#f87171";
+  elements.resultsGrade.classList.remove("grade-good", "grade-mid", "grade-low");
+  elements.resultsGrade.classList.add(
+    percent >= 70 ? "grade-good" : percent >= 50 ? "grade-mid" : "grade-low"
+  );
   elements.resultsSummary.textContent = `${state.quizCorrect} נכונות מתוך ${total}`;
   elements.resultsDetail.textContent = message;
 
-  showScreen("results");
+  state.allowResults = true;
+  navigate("results");
   updateProgress(100, `ציון: ${percent}%`, percent >= 70 ? "🏆" : "📊");
   speak(percent >= 70 ? "Great job!" : "Keep practicing!");
 }
@@ -740,10 +819,12 @@ function updateScore() {
 }
 
 function updateProgress(percent, text, icon) {
+  const rounded = Math.round(percent);
   elements.globalProgress.style.width = `${percent}%`;
-  elements.progressPercent.textContent = `${Math.round(percent)}%`;
+  elements.progressPercent.textContent = `${rounded}%`;
   elements.playerIndicatorText.textContent = text;
   elements.playerIndicatorIcon.textContent = icon;
+
 }
 
 function finishGame() {
@@ -752,7 +833,9 @@ function finishGame() {
     return;
   }
 
-  showScreen("home");
+  state.activeGame = null;
+  state.allowResults = false;
+  navigate("home", { replace: true });
   updateProgress(100, "סיימת בהצלחה!", "🏆");
   speak("Excellent job! You are a champion!");
 }
@@ -762,7 +845,13 @@ async function initApp() {
   syncSelectedList();
   renderListControls();
   updateAdminUI();
-  showScreen("home");
+
+  const initialScreen = getScreenFromHash();
+  if (location.hash) {
+    resolveRouteFromHistory();
+  } else {
+    navigate("home", { replace: true });
+  }
 }
 
 initApp();
